@@ -139,8 +139,8 @@ namespace state
     using t_state_id     = I;
     using t_interface    = IF;
     using t_user         = U;
-    using t_user_ref     = U&;
-    using t_user_cref    = const U&;
+    using r_user         = U&;
+    using r_cuser        = const U&;
     using p_state        = t_state*;
     using p_cstate       = const t_state*;
   };
@@ -167,8 +167,8 @@ namespace state
     using t_statemachine = state::t_statemachine<I, U, t_no_if>;
     using t_state_id     = I;
     using t_user         = U;
-    using t_user_ref     = U&;
-    using t_user_cref    = const U&;
+    using r_user         = U&;
+    using r_cuser        = const U&;
     using p_state        = t_state*;
     using p_cstate       = const t_state*;
   };
@@ -197,21 +197,21 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
-    using t_void      = state::t_void;
-    using t_user_ref  = typename t_traits::t_user_ref;
-    using t_user_cref = typename t_traits::t_user_cref;
+    using t_void  = state::t_void;
+    using r_user  = typename t_traits::r_user;
+    using r_cuser = typename t_traits::r_cuser;
 
     // state object must have an associated id and access to user
-    t_state(t_sid sid, t_user_ref user) : sid_(sid), user_(user)      { }
+    t_state(t_sid sid, r_user user) : sid_(sid), user_(user)          { }
     virtual ~t_state()                                                { }
 
     // use to indicate that a state change is requested or not.
     virtual t_sid request_transition(t_sid sid) const    { return sid;  }
             t_sid no_transition     ()          const    { return sid_; }
 
-    t_user_ref  get_user ()                             { return user_; }
-    t_user_cref get_user () const                       { return user_; }
-    t_user_cref get_cuser() const                       { return user_; }
+    r_user  get_user ()                                 { return user_; }
+    r_cuser get_user () const                           { return user_; }
+    r_cuser get_cuser() const                           { return user_; }
 
   private:
     template<typename, typename, typename> friend class t_statemachine;
@@ -220,8 +220,8 @@ namespace state
     virtual t_sid  entry_point()              { return no_transition(); }
     virtual t_void exit_point()                                       { }
 
-    const t_sid sid_;
-    t_user_ref  user_;
+    const t_sid  sid_;
+          r_user user_;
   };
 
   template<typename I, typename IF>
@@ -264,21 +264,21 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
-    using t_void      = state::t_void;
-    using t_user_ref  = typename t_traits::t_user_ref;
-    using t_user_cref = typename t_traits::t_user_cref;
+    using t_void  = state::t_void;
+    using r_user  = typename t_traits::r_user;
+    using r_cuser = typename t_traits::r_cuser;
 
     // state object must have an associated id and access to user
-    t_state(t_sid sid, t_user_ref user) : sid_(sid), user_(user)      { }
+    t_state(t_sid sid, r_user user) : sid_(sid), user_(user)          { }
     virtual ~t_state()                                                { }
 
     // use to indicate that a state change is requested or not.
     virtual t_sid request_transition(t_sid sid) const    { return sid;  }
             t_sid no_transition     ()          const    { return sid_; }
 
-    t_user_ref  get_user ()                             { return user_; }
-    t_user_cref get_user () const                       { return user_; }
-    t_user_cref get_cuser() const                       { return user_; }
+    r_user  get_user ()                                 { return user_; }
+    r_cuser get_user () const                           { return user_; }
+    r_cuser get_cuser() const                           { return user_; }
 
   private:
     template<typename, typename, typename> friend class t_statemachine;
@@ -287,8 +287,8 @@ namespace state
     virtual t_sid  entry_point()              { return no_transition(); }
     virtual t_void exit_point()                                       { }
 
-    const t_sid sid_;
-    t_user_ref  user_;
+    const t_sid  sid_;
+          r_user user_;
   };
 
   template<typename I>
@@ -332,14 +332,14 @@ namespace state
     t_sid get_current_sid() const                         { return curr_; }
 
   protected:
-    using t_void      = state::t_void;
-    using t_user_ref  = typename t_traits::t_user_ref;
-    using t_user_cref = typename t_traits::t_user_cref;
-    using p_state     = typename t_traits::p_state;
-    using p_cstate    = typename t_traits::p_cstate;
+    using t_void   = state::t_void;
+    using r_user   = typename t_traits::r_user;
+    using r_cuser  = typename t_traits::r_cuser;
+    using p_state  = typename t_traits::p_state;
+    using p_cstate = typename t_traits::p_cstate;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
-    t_statemachine(t_sid stop, t_user_ref user)
+    t_statemachine(t_sid stop, r_user user)
       : stop_(stop), curr_(stop_), user_(user)                          { }
 
     // start the statemachine in the id state.
@@ -362,9 +362,9 @@ namespace state
     }
 
     // access user
-    t_user_ref  get_user ()                              { return user_; }
-    t_user_cref get_user () const                        { return user_; }
-    t_user_cref get_cuser() const                        { return user_; }
+    r_user  get_user ()                                  { return user_; }
+    r_cuser get_user () const                            { return user_; }
+    r_cuser get_cuser() const                            { return user_; }
 
     // access to current state pointer
     p_state  get_current()                    { return get_state(curr_); }
@@ -389,9 +389,9 @@ namespace state
     inline
     p_cstate get_cstate(t_sid sid) const        { return get_state(sid); }
 
-    const t_sid stop_;
-          t_sid curr_;
-    t_user_ref  user_;
+    const t_sid  stop_;
+          t_sid  curr_;
+          r_user user_;
   };
 
   template<typename I, typename IF>
@@ -462,13 +462,13 @@ namespace state
 
   protected:
     using t_void      = state::t_void;
-    using t_user_ref  = typename t_traits::t_user_ref;
-    using t_user_cref = typename t_traits::t_user_cref;
-    using p_state     = typename t_traits::p_state;
-    using p_cstate    = typename t_traits::p_cstate;
+    using r_user   = typename t_traits::r_user;
+    using r_cuser  = typename t_traits::r_cuser;
+    using p_state  = typename t_traits::p_state;
+    using p_cstate = typename t_traits::p_cstate;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
-    t_statemachine(t_sid stop, t_user_ref user)
+    t_statemachine(t_sid stop, r_user user)
       : stop_(stop), curr_(stop_), user_(user)                          { }
 
     // start the statemachine in the id state.
@@ -492,9 +492,9 @@ namespace state
     //           the derived class.
 
     // access user
-    t_user_ref  get_user ()                     { return user_; }
-    t_user_cref get_user () const               { return user_; }
-    t_user_cref get_cuser() const               { return user_; }
+    r_user  get_user ()                     { return user_; }
+    r_cuser get_user () const               { return user_; }
+    r_cuser get_cuser() const               { return user_; }
 
     // access to state pointer associated with their ids.
     virtual p_state  get_state(t_sid)       = 0;
@@ -513,9 +513,9 @@ namespace state
     virtual t_sid  initial_point(t_sid id) { return id; }
     virtual t_void final_point  ()                    { }
 
-    const t_sid stop_;
-          t_sid curr_;
-    t_user_ref  user_;
+    const t_sid  stop_;
+          t_sid  curr_;
+          r_user user_;
   };
 
   template<typename I>
