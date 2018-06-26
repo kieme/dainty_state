@@ -115,6 +115,20 @@ namespace state
 
   ///////////////////////////////////////////////////////////////////////////
 
+  template<typename I, typename U, typename IF>
+  inline
+  t_void debug_start(const t_statemachine<I,U,IF>&, I start)     { }
+
+  template<typename I, typename U, typename IF>
+  inline
+  t_void debug_stop(const t_statemachine<I,U,IF>&)               { }
+
+  template<typename I, typename U, typename IF>
+  inline
+  t_void debug(const t_statemachine<I,U,IF>&, I current, I next) { }
+
+  ///////////////////////////////////////////////////////////////////////////
+
   template<typename I, typename U = t_no_user, typename IF = t_no_if>
   struct t_traits {
     t_traits() = delete;
@@ -183,6 +197,7 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
+    using t_void      = state::t_void;
     using t_user_ref  = typename t_traits::t_user_ref;
     using t_user_cref = typename t_traits::t_user_cref;
 
@@ -212,13 +227,15 @@ namespace state
   template<typename I, typename IF>
   class t_state<I, t_no_user, IF> : public IF {
   public:
-    using t_traits    = state::t_traits<I, t_no_user, IF>;
-    using t_sid       = typename t_traits::t_state_id;
+    using t_traits = state::t_traits<I, t_no_user, IF>;
+    using t_sid    = typename t_traits::t_state_id;
 
     // identification of the state
     t_sid get_sid() const                             { return sid_; }
 
   protected:
+    using t_void = state::t_void;
+
     // state object must have an associated id
     t_state(t_sid sid) : sid_(sid)                                 { }
     virtual ~t_state()                                             { }
@@ -247,6 +264,7 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
+    using t_void      = state::t_void;
     using t_user_ref  = typename t_traits::t_user_ref;
     using t_user_cref = typename t_traits::t_user_cref;
 
@@ -283,6 +301,8 @@ namespace state
     t_sid get_sid() const                             { return sid_; }
 
   protected:
+    using t_void = state::t_void;
+
     // state object must have an associated id
     t_state(t_sid sid) : sid_(sid)                                 { }
     virtual ~t_state()                                             { }
@@ -303,20 +323,6 @@ namespace state
 
   ///////////////////////////////////////////////////////////////////////////
 
-  template<typename I, typename U, typename IF>
-  inline
-  t_void debug_start(const t_statemachine<I,U,IF>&, I start)     { }
-
-  template<typename I, typename U, typename IF>
-  inline
-  t_void debug_stop(const t_statemachine<I,U,IF>&)               { }
-
-  template<typename I, typename U, typename IF>
-  inline
-  t_void debug(const t_statemachine<I,U,IF>&, I current, I next) { }
-
-  ///////////////////////////////////////////////////////////////////////////
-
   template<typename I, typename U = t_no_user, typename IF = t_no_if>
   class t_statemachine : public IF {
   public:
@@ -326,6 +332,7 @@ namespace state
     t_sid get_current_sid() const                         { return curr_; }
 
   protected:
+    using t_void      = state::t_void;
     using t_user_ref  = typename t_traits::t_user_ref;
     using t_user_cref = typename t_traits::t_user_cref;
     using p_state     = typename t_traits::p_state;
@@ -396,6 +403,7 @@ namespace state
     t_sid get_current_sid() const               { return curr_; }
 
   protected:
+    using t_void   = state::t_void;
     using p_state  = typename t_traits::p_state;
     using p_cstate = typename t_traits::p_cstate;
 
@@ -453,6 +461,7 @@ namespace state
     t_sid get_current_sid() const                         { return curr_; }
 
   protected:
+    using t_void      = state::t_void;
     using t_user_ref  = typename t_traits::t_user_ref;
     using t_user_cref = typename t_traits::t_user_cref;
     using p_state     = typename t_traits::p_state;
@@ -479,7 +488,7 @@ namespace state
     }
 
     // NOTE:     current() is not given because there is no interface.
-    // NOTE use: get_state(current_sid()) to get current state from the
+    // NOTE use: get_state(get_current_sid()) to get current state from the
     //           the derived class.
 
     // access user
@@ -518,6 +527,7 @@ namespace state
     t_sid get_current_sid() const               { return curr_; }
 
   protected:
+    using t_void   = state::t_void;
     using p_state  = typename t_traits::p_state;
     using p_cstate = typename t_traits::p_cstate;
 
@@ -541,7 +551,7 @@ namespace state
     }
 
     // NOTE:     current() is not given because there is no interface.
-    // NOTE use: get_state(current_sid()) to get current state from the
+    // NOTE use: get_state(get_current_sid()) to get current state from the
     //           the derived class.
 
     // access to state pointer associated with their ids.
@@ -563,8 +573,6 @@ namespace state
     const t_sid stop_;
           t_sid curr_;
   };
-
-///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 }
