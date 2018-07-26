@@ -133,56 +133,52 @@ namespace state
   struct t_traits {
     t_traits() = delete;
 
-    using t_self         = state::t_traits      <I, U, IF>;
     using t_state        = state::t_state       <I, U, IF>;
     using t_statemachine = state::t_statemachine<I, U, IF>;
-    using t_state_id     = I;
-    using t_interface    = IF;
-    using t_user         = U;
-    using r_user         = U&;
-    using r_cuser        = const U&;
-    using p_state        = t_state*;
-    using p_cstate       = const t_state*;
+    using t_state_id     = typename named::t_prefix<I>::t_;
+    using t_interface    = typename named::t_prefix<IF>::t_;
+    using t_user         = typename named::t_prefix<U>::t_;
+    using r_user         = typename named::t_prefix<U>::r_;
+    using R_user         = typename named::t_prefix<U>::R_;
+    using p_state        = typename named::t_prefix<t_state>::p_;
+    using P_state        = typename named::t_prefix<t_state>::P_;
   };
 
   template<typename I, typename IF>
   struct t_traits<I, t_no_user, IF> {
     t_traits() = delete;
 
-    using t_self         = state::t_traits      <I, t_no_user, IF>;
     using t_state        = state::t_state       <I, t_no_user, IF>;
     using t_statemachine = state::t_statemachine<I, t_no_user, IF>;
-    using t_state_id     = I;
-    using t_interface    = IF;
-    using p_state        = t_state*;
-    using p_cstate       = const t_state*;
+    using t_state_id     = typename named::t_prefix<I>::t_;
+    using t_interface    = typename named::t_prefix<IF>::t_;
+    using p_state        = typename named::t_prefix<t_state>::p_;
+    using P_state        = typename named::t_prefix<t_state>::P_;
   };
 
   template<typename I, typename U>
   struct t_traits<I, U, t_no_if> {
     t_traits() = delete;
 
-    using t_self         = state::t_traits      <I, U, t_no_if>;
     using t_state        = state::t_state       <I, U, t_no_if>;
     using t_statemachine = state::t_statemachine<I, U, t_no_if>;
-    using t_state_id     = I;
-    using t_user         = U;
-    using r_user         = U&;
-    using r_cuser        = const U&;
-    using p_state        = t_state*;
-    using p_cstate       = const t_state*;
+    using t_state_id     = typename named::t_prefix<I>::t_;
+    using t_user         = typename named::t_prefix<U>::t_;
+    using r_user         = typename named::t_prefix<U>::r_;
+    using R_user         = typename named::t_prefix<U>::R_;
+    using p_state        = typename named::t_prefix<t_state>::p_;
+    using P_state        = typename named::t_prefix<t_state>::P_;
   };
 
   template<typename I>
   struct t_traits<I, t_no_user, t_no_if> {
     t_traits() = delete;
 
-    using t_self         = state::t_traits      <I, t_no_user, t_no_if>;
     using t_state        = state::t_state       <I, t_no_user, t_no_if>;
     using t_statemachine = state::t_statemachine<I, t_no_user, t_no_if>;
-    using t_state_id     = I;
-    using p_state        = t_state*;
-    using p_cstate       = const t_state*;
+    using t_state_id     = typename named::t_prefix<I>::t_;
+    using p_state        = typename named::t_prefix<t_state>::p_;
+    using P_state        = typename named::t_prefix<t_state>::P_;
   };
 
   ///////////////////////////////////////////////////////////////////////////
@@ -197,9 +193,9 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
-    using t_void  = state::t_void;
-    using r_user  = typename t_traits::r_user;
-    using r_cuser = typename t_traits::r_cuser;
+    using t_void = state::t_void;
+    using r_user = typename t_traits::r_user;
+    using R_user = typename t_traits::R_user;
 
     // state object must have an associated id and access to user
     t_state(t_sid sid, r_user user) : sid_(sid), user_(user)          { }
@@ -210,8 +206,8 @@ namespace state
             t_sid no_transition     ()          const    { return sid_; }
 
     r_user  get_user ()                                 { return user_; }
-    r_cuser get_user () const                           { return user_; }
-    r_cuser get_cuser() const                           { return user_; }
+    R_user get_user () const                            { return user_; }
+    R_user get_cuser() const                            { return user_; }
 
   private:
     template<typename, typename, typename> friend class t_statemachine;
@@ -264,9 +260,9 @@ namespace state
     t_sid get_sid() const                                { return sid_; }
 
   protected:
-    using t_void  = state::t_void;
-    using r_user  = typename t_traits::r_user;
-    using r_cuser = typename t_traits::r_cuser;
+    using t_void = state::t_void;
+    using r_user = typename t_traits::r_user;
+    using R_user = typename t_traits::R_user;
 
     // state object must have an associated id and access to user
     t_state(t_sid sid, r_user user) : sid_(sid), user_(user)          { }
@@ -276,9 +272,9 @@ namespace state
     virtual t_sid request_transition(t_sid sid) const    { return sid;  }
             t_sid no_transition     ()          const    { return sid_; }
 
-    r_user  get_user ()                                 { return user_; }
-    r_cuser get_user () const                           { return user_; }
-    r_cuser get_cuser() const                           { return user_; }
+    r_user get_user ()                                  { return user_; }
+    R_user get_user () const                            { return user_; }
+    R_user get_cuser() const                            { return user_; }
 
   private:
     template<typename, typename, typename> friend class t_statemachine;
@@ -332,11 +328,11 @@ namespace state
     t_sid get_current_sid() const                         { return curr_; }
 
   protected:
-    using t_void   = state::t_void;
-    using r_user   = typename t_traits::r_user;
-    using r_cuser  = typename t_traits::r_cuser;
-    using p_state  = typename t_traits::p_state;
-    using p_cstate = typename t_traits::p_cstate;
+    using t_void  = state::t_void;
+    using r_user  = typename t_traits::r_user;
+    using R_user  = typename t_traits::R_user;
+    using p_state = typename t_traits::p_state;
+    using P_state = typename t_traits::P_state;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
     t_statemachine(t_sid stop, r_user user)
@@ -362,14 +358,14 @@ namespace state
     }
 
     // access user
-    r_user  get_user ()                                  { return user_; }
-    r_cuser get_user () const                            { return user_; }
-    r_cuser get_cuser() const                            { return user_; }
+    r_user get_user ()                                  { return user_; }
+    R_user get_user () const                            { return user_; }
+    R_user get_cuser() const                            { return user_; }
 
     // access to current state pointer
-    p_state  get_current()                    { return get_state(curr_); }
-    p_cstate get_current()  const             { return get_state(curr_); }
-    p_cstate get_ccurrent() const           { return get_current(curr_); }
+    p_state get_current()                    { return get_state(curr_); }
+    P_state get_current()  const             { return get_state(curr_); }
+    P_state get_ccurrent() const           { return get_current(curr_); }
 
     // control state changes if required. return indicate if state was changed
     inline
@@ -383,11 +379,11 @@ namespace state
     virtual t_void final_point  ()                    { }
 
     // access to state pointer associated with their ids.
-    virtual p_state  get_state (t_sid)          = 0;
-    virtual p_cstate get_state (t_sid) const    = 0;
+    virtual p_state get_state(t_sid)       = 0;
+    virtual P_state get_state(t_sid) const = 0;
 
     inline
-    p_cstate get_cstate(t_sid sid) const        { return get_state(sid); }
+    P_state get_cstate(t_sid sid) const        { return get_state(sid); }
 
     const t_sid  stop_;
           t_sid  curr_;
@@ -403,9 +399,9 @@ namespace state
     t_sid get_current_sid() const               { return curr_; }
 
   protected:
-    using t_void   = state::t_void;
-    using p_state  = typename t_traits::p_state;
-    using p_cstate = typename t_traits::p_cstate;
+    using t_void  = state::t_void;
+    using p_state = typename t_traits::p_state;
+    using P_state = typename t_traits::P_state;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
     t_statemachine(t_sid stop) : stop_(stop), curr_(stop_) { }
@@ -427,9 +423,9 @@ namespace state
     }
 
     // access to current state pointer
-    p_state  get_current ()       { return get_state (curr_); }
-    p_cstate get_current () const { return get_state (curr_); }
-    p_cstate get_ccurrent() const { return get_cstate(curr_); }
+    p_state get_current ()       { return get_state (curr_); }
+    P_state get_current () const { return get_state (curr_); }
+    P_state get_ccurrent() const { return get_cstate(curr_); }
 
     // control state changes if required. return indicate if state was changed
     t_sid do_transition(t_sid next) {
@@ -442,11 +438,11 @@ namespace state
     virtual t_void final_point  ()                    { }
 
     // access to state pointer associated with their ids.
-    virtual p_state  get_state(t_sid)       = 0;
-    virtual p_cstate get_state(t_sid) const = 0;
+    virtual p_state get_state(t_sid)       = 0;
+    virtual P_state get_state(t_sid) const = 0;
 
     inline
-    p_cstate get_cstate(t_sid sid) const { return get_state(sid); }
+    P_state get_cstate(t_sid sid) const { return get_state(sid); }
 
     const t_sid stop_;
           t_sid curr_;
@@ -461,11 +457,11 @@ namespace state
     t_sid get_current_sid() const                         { return curr_; }
 
   protected:
-    using t_void      = state::t_void;
-    using r_user   = typename t_traits::r_user;
-    using r_cuser  = typename t_traits::r_cuser;
-    using p_state  = typename t_traits::p_state;
-    using p_cstate = typename t_traits::p_cstate;
+    using t_void  = state::t_void;
+    using r_user  = typename t_traits::r_user;
+    using R_user  = typename t_traits::R_user;
+    using p_state = typename t_traits::p_state;
+    using P_state = typename t_traits::P_state;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
     t_statemachine(t_sid stop, r_user user)
@@ -492,16 +488,16 @@ namespace state
     //           the derived class.
 
     // access user
-    r_user  get_user ()                     { return user_; }
-    r_cuser get_user () const               { return user_; }
-    r_cuser get_cuser() const               { return user_; }
+    r_user get_user ()                     { return user_; }
+    R_user get_user () const               { return user_; }
+    R_user get_cuser() const               { return user_; }
 
     // access to state pointer associated with their ids.
-    virtual p_state  get_state(t_sid)       = 0;
-    virtual p_cstate get_state(t_sid) const = 0;
+    virtual p_state get_state(t_sid)       = 0;
+    virtual P_state get_state(t_sid) const = 0;
 
     inline
-    p_cstate get_cstate(t_sid sid) const { return get_state(sid); }
+    P_state get_cstate(t_sid sid) const { return get_state(sid); }
 
     // control state changes if required. return indicate if state was changed
     t_sid do_transition(t_sid next) {
@@ -527,9 +523,9 @@ namespace state
     t_sid get_current_sid() const               { return curr_; }
 
   protected:
-    using t_void   = state::t_void;
-    using p_state  = typename t_traits::p_state;
-    using p_cstate = typename t_traits::p_cstate;
+    using t_void  = state::t_void;
+    using p_state = typename t_traits::p_state;
+    using P_state = typename t_traits::P_state;
 
     // important. user is NOT owned but used. PRE should be an invalid state.
     t_statemachine(t_sid stop) : stop_(stop), curr_(stop_) { }
@@ -555,10 +551,10 @@ namespace state
     //           the derived class.
 
     // access to state pointer associated with their ids.
-    virtual p_state  get_state(t_sid)       = 0;
-    virtual p_cstate get_state(t_sid) const = 0;
+    virtual p_state get_state(t_sid)       = 0;
+    virtual P_state get_state(t_sid) const = 0;
 
-    inline p_cstate get_cstate(t_sid sid) const { return get_state(sid); }
+    inline  P_state get_cstate(t_sid sid) const { return get_state(sid); }
 
     // control state changes if required. return indicate if state was changed
     t_sid do_transition(t_sid next) {

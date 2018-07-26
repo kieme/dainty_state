@@ -330,8 +330,8 @@ namespace coffee_vending_machine
     state_id initial_point(state_id id)                  { get_user().rinse(); return id; }
     void     final_point  ()                             { get_user().power_off();        }
 
-    p_state  get_state(t_sid s)                                      { return states_[s]; }
-    p_cstate get_state(t_sid s) const                                { return states_[s]; }
+    p_state get_state(t_sid s)                                       { return states_[s]; }
+    P_state get_state(t_sid s) const                                 { return states_[s]; }
 
     prepare_state prepare_;
     ready_state   ready_;
